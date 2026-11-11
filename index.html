@@ -2526,33 +2526,51 @@
       // Mobile touch swipe & desktop drag for Hero 3D bags
       const heroEl = $('#hero');
       let hX = null, hY = null, hPointerX = null;
+      let lastHeroSwipeTime = 0;
+      const HERO_SWIPE_COOLDOWN = 450; // ms transition lock to ensure only 1 product moves per swipe
 
       heroEl.addEventListener('touchstart', e => {
         if (e.target.closest('button, a')) return;
+        if (e.touches.length !== 1) return; // Single-finger swipe only
         hX = e.touches[0].clientX;
         hY = e.touches[0].clientY;
       }, {passive: true});
 
       heroEl.addEventListener('touchend', e => {
         if (hX === null) return;
-        const dx = e.changedTouches[0].clientX - hX;
-        const dy = e.changedTouches[0].clientY - hY;
+        const touch = e.changedTouches[0];
+        const dx = touch.clientX - hX;
+        const dy = touch.clientY - hY;
+        hX = null;
+        hY = null;
+
+        // Minimum swipe threshold and predominantly horizontal gesture
         if (Math.abs(dx) >= 30 && Math.abs(dx) > Math.abs(dy) * 0.65) {
+          const now = Date.now();
+          // Rate-limit fast flings/swipes so it moves exactly 1 product
+          if (now - lastHeroSwipeTime < HERO_SWIPE_COOLDOWN) return;
+          lastHeroSwipeTime = now;
           go(dx < 0 ? 1 : -1);
         }
-        hX = null; hY = null;
       }, {passive: true});
 
       heroEl.addEventListener('touchcancel', () => {hX = null; hY = null;}, {passive: true});
 
+      // Desktop mouse drag only (ignores mobile touch to prevent double-firing)
       heroEl.addEventListener('pointerdown', e => {
+        if (e.pointerType && e.pointerType !== 'mouse') return;
         if (!e.target.closest('button, a')) hPointerX = e.clientX;
       });
       addEventListener('pointerup', e => {
         if (hPointerX !== null) {
           const dx = e.clientX - hPointerX;
-          if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
           hPointerX = null;
+          if (Math.abs(dx) > 40) {
+            const now = Date.now();
+            if (now - lastHeroSwipeTime < HERO_SWIPE_COOLDOWN) return;
+            lastHeroSwipeTime = now;
+            go(dx < 0 ? 1 : -1);
+          }
         }
       });
       go(0);
@@ -2808,9 +2826,12 @@
       // Enhanced Mobile Touch Swipe & Pointer drag for Product Showcase
       const sc = $('#showcase');
       let sX = null, sY = null, scPointerX = null;
+      let lastShowcaseSwipeTime = 0;
+      const SHOWCASE_SWIPE_COOLDOWN = 450;
 
       sc.addEventListener('touchstart', e => {
         if (e.target.closest('button, a, input')) return;
+        if (e.touches.length !== 1) return;
         sX = e.touches[0].clientX;
         sY = e.touches[0].clientY;
       }, {passive: true});
@@ -2819,26 +2840,34 @@
         if (sX === null) return;
         const dx = e.changedTouches[0].clientX - sX;
         const dy = e.changedTouches[0].clientY - sY;
+        sX = null; sY = null;
         if (Math.abs(dx) >= 30 && Math.abs(dx) > Math.abs(dy) * 0.65) {
+          const now = Date.now();
+          if (now - lastShowcaseSwipeTime < SHOWCASE_SWIPE_COOLDOWN) return;
+          lastShowcaseSwipeTime = now;
           if (dx < 0) showcaseNext();
           else showcasePrev();
         }
-        sX = null; sY = null;
       }, {passive: true});
 
       sc.addEventListener('touchcancel', () => {sX = null; sY = null;}, {passive: true});
 
+      // Desktop mouse drag only
       sc.addEventListener('pointerdown', e => {
+        if (e.pointerType && e.pointerType !== 'mouse') return;
         if (!e.target.closest('button, a, input')) scPointerX = e.clientX;
       });
       sc.addEventListener('pointerup', e => {
         if (scPointerX !== null) {
           const dx = e.clientX - scPointerX;
+          scPointerX = null;
           if (Math.abs(dx) > 40) {
+            const now = Date.now();
+            if (now - lastShowcaseSwipeTime < SHOWCASE_SWIPE_COOLDOWN) return;
+            lastShowcaseSwipeTime = now;
             if (dx < 0) showcaseNext();
             else showcasePrev();
           }
-          scPointerX = null;
         }
       });
 
