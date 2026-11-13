@@ -379,6 +379,22 @@
       max-width: 24ch
     }
 
+    .hero-declaration {
+      position: absolute;
+      z-index: 3;
+      right: 5vw;
+      bottom: max(20px, env(safe-area-inset-bottom, 0px));
+      font-family: 'Poppins', 'Instrument Sans', sans-serif;
+      font-size: .72rem;
+      font-weight: 400;
+      letter-spacing: .02em;
+      color: var(--ink);
+      opacity: 0.72;
+      pointer-events: none;
+      user-select: none;
+      transition: color .7s ease;
+    }
+
     .ctl {
       position: absolute;
       z-index: 2;
@@ -918,6 +934,14 @@
 
       .tag {
         bottom: 8.5vh
+      }
+
+      .hero-declaration {
+        left: 5vw;
+        right: auto;
+        bottom: max(14px, env(safe-area-inset-bottom, 0px));
+        font-size: .65rem;
+        opacity: 0.75;
       }
     }
 
@@ -2005,6 +2029,16 @@
       color: rgba(255, 255, 255, 0.22);
     }
 
+    .footer-disclaimer-sep {
+      color: rgba(255, 255, 255, 0.22);
+      margin: 0 4px;
+    }
+
+    .footer-disclaimer-note {
+      color: #a59587;
+      font-size: .8rem;
+    }
+
     /* Responsive Footer Adjustments */
     @media(max-width:640px) {
       .footer-container {
@@ -2144,6 +2178,7 @@
     <div class="ctl"><button id="prev" aria-label="Previous flavor">‹</button>
       <div id="dots"></div><button id="next" aria-label="Next flavor">›</button>
     </div>
+    <span class="hero-declaration">*Images are for illustration purpose only</span>
   </header>
   <canvas id="gl" aria-hidden="true"></canvas>
 
@@ -2300,7 +2335,7 @@
 
       <!-- Bottom Bar / Sub-footer -->
       <div class="footer-bottom">
-        <p class="footer-copyright">© 2026 Chipca Foods. All rights reserved.</p>
+        <p class="footer-copyright">© 2026 Chipca Foods. All rights reserved. <span class="footer-disclaimer-sep">|</span> <span class="footer-disclaimer-note">*Images are for illustration purpose only</span></p>
         <div class="footer-legal">
           <a href="#privacy"
             onclick="alert('Privacy Policy: Chipca respects your privacy and protects your personal information.'); return false;">Privacy
