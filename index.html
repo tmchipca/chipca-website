@@ -3306,24 +3306,22 @@
       const totalAmount = CART.reduce((s, x) => s + x.qty * x.price, 0);
 
       // Construct structured WhatsApp Message
-      let text = `*NEW ORDER - CHIPCA WEBSITE* 🍟\n`;
-      text += `---------------------------------\n`;
-      text += `*Customer Details:*\n`;
-      text += `• *Name:* ${name}\n`;
-      text += `• *Phone:* ${phone}\n`;
-      text += `• *Delivery Address:* ${addr}\n`;
-      if (note) text += `• *Special Note:* ${note}\n`;
-      text += `---------------------------------\n`;
-      text += `*Items Ordered:*\n`;
-      CART.forEach((item, idx) => {
-        text += `${idx + 1}. *${item.title}* (${item.weight})\n`;
-        text += `   Qty: ${item.qty} × ₹${item.price} = *₹${item.qty * item.price}*\n`;
+      let text = `𝙲𝙷𝙸𝙿𝙲𝙰\n\n`;
+      text += `𝙲𝚄𝚂𝚃𝙾𝙼𝙴𝚁 𝙸𝙽𝙵𝙾𝚁𝙼𝙰𝚃𝙸𝙾𝙽\n\n`;
+      text += `Customer Name : ${name}\n`;
+      text += `Phone Number : ${phone}\n`;
+      text += `Delivery Address : ${addr}\n`;
+      if (note) text += `Special Note : ${note}\n`;
+      text += `\n𝙾𝚁𝙳𝙴𝚁 𝙳𝙴𝚃𝙰𝙸𝙻𝚂\n\n`;
+      const itemBlocks = CART.map((item, idx) => {
+        return `${idx + 1}. ${item.title} (${item.weight})\n   ${item.qty} × ₹${item.price} = ₹${item.qty * item.price}`;
       });
-      text += `---------------------------------\n`;
-      text += `*Total Packs:* ${totalPacks}\n`;
-      text += `*Grand Total:* *₹${totalAmount}*\n`;
-      text += `---------------------------------\n`;
-      text += `Please confirm my order and share payment details. Thank you!`;
+      text += itemBlocks.join('\n\n') + '\n\n';
+      text += `𝙿𝙰𝚈𝙼𝙴𝙽𝚃 𝚂𝚄𝙼𝙼𝙰𝚁𝚈\n\n`;
+      text += `Total Packs : ${totalPacks}\n\n`;
+      text += `𝙶𝚁𝙰𝙽𝙳 𝚃𝙾𝚃𝙰𝙻 : ₹${totalAmount}\n\n`;
+      text += `𝙾𝚁𝙳𝙴𝚁 𝙲𝙾𝙽𝙵𝙸𝚁𝙼𝙰𝚃𝙸𝙾𝙽\n\n`;
+      text += `Kindly confirm your order and share the payment details to proceed.`;
 
       const waUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`;
       window.open(waUrl, '_blank');
